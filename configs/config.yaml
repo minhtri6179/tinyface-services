@@ -1,0 +1,6 @@
+POSTGRES: &POSTGRES
+  dsn: "postgres:secret@tcp(localhost:5432)/authen?charset=utf8mb4&parseTime=True&loc=Local"
+  defaultstringsize: 256
+  disabledatetimeprecision: true
+  dontsupportrenameindex: true
+  skipinitializewithversion: false
