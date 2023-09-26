@@ -1,0 +1,246 @@
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/minhtri6179/tinyface-users-service/pb";
+package pb;
+
+service Authen {
+  rpc Login(LoginRequest) returns (LoginResponse) {}
+  rpc SignUp(UserDetailInfo) returns (SignUpResponse) {}
+  rpc EditUser(EditUserRequest) returns (EditUserResponse) {}
+  rpc GetFriendFollower(UserInfo) returns (FriendFollower) {}
+  rpc GetPostDetail(GetPostRequest) returns (Post) {}
+  rpc FollowFriend(FollowFriendRequest) returns (FollowFriendResponse) {}
+  rpc UnfollowFriend(UnfollowFriendRequest) returns (UnfollowFriendResponse) {}
+  rpc GetFollowerList(GetFollowerListRequest) returns (GetFollowerListResponse) {}
+  rpc CreatePost(CreatePostRequest) returns (CreatePostResponse) {}
+  rpc GetPost(GetPostRequest) returns (GetPostResponse) {}
+  rpc DeletePost(DeletePostRequest) returns (DeletePostResponse) {}
+  rpc EditPost(EditPostRequest) returns (EditPostResponse) {}
+  rpc CreatePostComment(CreatePostCommentRequest) returns (CreatePostCommentResponse) {}
+  rpc LikePost(LikePostRequest) returns (LikePostResponse) {}
+}
+message SignUpRequest{
+    string username = 1;
+    string password = 2;
+    string email = 3;
+    string first_name = 4;
+    string last_name = 5;
+    google.protobuf.Timestamp dob  = 6;
+}
+message SignUpResponse{
+    int32 status = 1;
+    string message = 2;
+}
+
+message LoginRequest{
+    string username = 1;
+    string password = 2;
+}
+message LoginResponse{
+    enum AuthenticationStatus {
+        OK = 0;
+        NOT_FOUND = 1;
+        WRONG_PASSWORD = 2;
+      }    
+    AuthenticationStatus status = 1;
+    int64 user_id = 2;
+}
+
+
+message FollowFriendRequest {
+  int64 user_id = 1;
+  int64 following_id = 2;
+}
+
+message FollowFriendResponse {
+  enum FollowStatus {
+    OK = 0;
+    NOT_FOUND = 1;
+    ALREADY_FOLLOWED = 2;
+  }
+  FollowStatus status = 1;
+}
+
+message UnfollowFriendRequest {
+  int64 user_id = 1;
+  int64 following_id = 2;
+}
+
+message UnfollowFriendResponse {
+  enum UnfollowStatus {
+    OK = 0;
+    NOT_FOUND = 1;
+    NOT_FOLLOWED = 2;
+  }
+  UnfollowStatus status = 1;
+}
+
+message GetFollowerListRequest {
+  int64 user_id = 1;
+}
+
+message GetFollowerListResponse {
+  enum GetFollowerListStatus {
+    OK = 0;
+    NOT_FOUND = 1;
+  }
+  GetFollowerListStatus status = 1;
+  message FollowerInfo {
+    int64 user_id = 1;
+    string user_name = 2;
+  }
+  repeated FollowerInfo followers = 2;
+}
+
+message UserInfo {
+  int64 user_id = 1;
+  string user_name = 2;
+  string user_password = 3;
+}
+
+message UserDetailInfo {
+  int64 user_id = 1;
+  string user_name = 2;
+  string user_password = 3;
+  string first_name = 4;
+  string last_name = 5;
+  google.protobuf.Timestamp dob = 6;
+  string email = 7;
+}
+
+message EditUserRequest {
+  int64 user_id = 1;
+  optional string user_password = 3;
+  optional string first_name = 4;
+  optional string last_name = 5;
+  optional google.protobuf.Timestamp dob = 6;
+}
+
+message EditUserResponse {
+  int64 user_id = 1;
+}
+
+message CheckUserAuthenticationRequest {
+  string user_name = 1;
+  string user_password = 2;
+}
+
+message CheckUserAuthenticationResponse {
+  enum AuthenticationStatus {
+    OK = 0;
+    NOT_FOUND = 1;
+    WRONG_PASSWORD = 2;
+  }
+  AuthenticationStatus status = 1;
+  int64 user_id = 2;
+}
+
+enum UserStatus{
+  OK = 0;
+  NOT_FOUND = 1;
+}
+
+message UserResult {
+  UserStatus status = 1;
+  UserDetailInfo info = 2;
+}
+
+message FriendFollower {
+  repeated UserInfo followers = 1;
+}
+
+message GetPostRequest {
+  int64 post_id = 1;
+}
+
+message Post {
+  int64 post_id = 2;
+  int64 user_id = 3;
+  string content_text = 4;
+  string content_image_path = 5;
+  bool visible = 6;
+  google.protobuf.Timestamp created_time = 7;
+}
+
+message GetPostResponse {
+  enum GetPostStatus {
+    OK = 0;
+    NOT_FOUND = 1;
+  }
+  GetPostStatus status = 1;
+  Post post = 2;
+}
+
+message CreatePostRequest {
+  int64 user_id = 1;
+  string content_text = 2;
+  string content_image_path = 3;
+  bool visible = 4;
+}
+
+message CreatePostResponse {
+  enum CreatePostStatus {
+    OK = 0;
+    NOT_FOUND = 1;
+  }
+  CreatePostStatus status = 1;
+  int64 post_id = 2;
+}
+
+message DeletePostRequest {
+  int64 post_id = 1;
+}
+
+message DeletePostResponse {
+  enum DeletePostStatus {
+    OK = 0;
+    NOT_FOUND = 1;
+  }
+  DeletePostStatus status = 1;
+}
+
+message EditPostRequest {
+  int64 post_id = 1;
+  optional string content_text = 2;
+  optional string content_image_path = 3;
+  optional bool visible = 4;
+}
+
+message EditPostResponse {
+  enum EditPostStatus {
+    OK = 0;
+    NOT_FOUND = 1;
+  }
+  EditPostStatus status = 1;
+}
+
+message CreatePostCommentRequest {
+  int64 post_id = 1;
+  int64 user_id = 2;
+  string content_text = 3;
+}
+
+message CreatePostCommentResponse {
+  enum CreatePostCommentStatus {
+    OK = 0;
+    USER_NOT_FOUND = 1;
+    POST_NOT_FOUND = 2;
+  }
+  CreatePostCommentStatus status = 1;
+  int64 comment_id = 2;
+}
+
+message LikePostRequest {
+  int64 user_id = 1;
+  int64 post_id = 2;
+}
+
+message LikePostResponse {
+  enum LikePostStatus {
+    OK = 0;
+    USER_NOT_FOUND = 1;
+    POST_NOT_FOUND = 2;
+  }
+  LikePostStatus status = 1;
+}

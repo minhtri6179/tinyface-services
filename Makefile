@@ -14,8 +14,14 @@ migrateup:
 
 migratedown:
 	migrate -path scripts/migration -database "${DB_URL}" -verbose down
+
 dockerClear:
 	docker volume rm $(docker volume ls -qf dangling=true) & docker rmi $(docker images -f "dangling=true" -q)
 
-.PHONY: postgres createdb migrateup migratedown new_migration dockerClear
+proto:
+	protoc --proto_path=proto --go_out=proto/pb --go_opt=paths=source_relative \
+	--go-grpc_out=proto/pb --go-grpc_opt=paths=source_relative \
+	proto/*.proto
+	
+.PHONY: postgres createdb migrateup migratedown new_migration dockerClear proto
  

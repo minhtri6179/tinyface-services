@@ -11,6 +11,7 @@ import (
 type Config struct {
 	Postgres *PostgresConfig `yaml:"postgres"`
 	Authen   *AuthenConfig   `yaml:"authen"`
+	Port     int             `yaml:"port"`
 }
 
 func LoadConfig(path string) (*Config, error) {
@@ -25,10 +26,10 @@ func LoadConfig(path string) (*Config, error) {
 		return nil, fmt.Errorf("read AuthenticateAndPost config (path=%s) error: %s", path, err)
 	}
 
-	config := &Config{}
-	if err := yaml.Unmarshal(bs, config); err != nil {
+	allInOneConf := &Config{}
+	if err := yaml.Unmarshal(bs, allInOneConf); err != nil {
 		return nil, fmt.Errorf("unmarshal AuthenticateAndPost config (path=%s) error: %s", path, err)
 	}
-	return config, nil
+	return allInOneConf, nil
 
 }
