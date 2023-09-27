@@ -1,21 +1,27 @@
 package api
 
 import (
-	"github.com/minhtri6179/tinyface-users-service/store"
+	"github.com/gin-gonic/gin"
 	"github.com/redis/go-redis/v9"
-	"gorm.io/gorm"
-	"honnef.co/go/tools/config"
 )
 
 type Server struct {
 	redisDatabase *redis.Client
-	store         store.Store
-	config        *config.Config
+	router        *gin.Engine
 }
 
-func NewServer(cfg *config.Config, rdb *redis.Client, db *gorm.DB) *Server {
+func NewServer(rdb *redis.Client) *Server {
 	server := &Server{redisDatabase: rdb}
-	server.store = store.NewStore(db)
-	server.config = cfg
+	router := gin.Default()
+
+	v1 := router.Group("/api/v1")
+	{
+		v1.GET("/ping", server.Pong)
+	}
+	server.router = router
 	return server
+}
+
+func (s *Server) StartServer(address string) error {
+	return s.router.Run(address)
 }
