@@ -8,13 +8,13 @@ createdb:
 	docker exec -it postgres12 createdb --username=root --owner=root tinyface
 
 new_migration:
-	migrate create -ext sql -dir scripts/migration/ -seq $(MESSAGE_NAME)
+	migrate create -ext sql -dir db/migration/ -seq $(MESSAGE_NAME)
 
 migrateup:
-	migrate -path scripts/migration -database "${DB_URL}" -verbose up
+	migrate -path db/migration -database "${DB_URL}" -verbose up
 
 migratedown:
-	migrate -path scripts/migration -database "${DB_URL}" -verbose down
+	migrate -path db/migration -database "${DB_URL}" -verbose down
 
 dockerClear:
 	docker volume rm $(docker volume ls -qf dangling=true) & docker rmi $(docker images -f "dangling=true" -q)
