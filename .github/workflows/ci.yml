@@ -30,8 +30,8 @@ jobs:
         id: go
       - name: Install migrate
         run: |
-          curl -L https://github.com/golang-migrate/migrate/releases/download/$version/migrate.$os-$arch.tar.gz | tar xvz
-          mv migrate.linux-amd64 /usr/bin/migrate
+          curl -L https://github.com/golang-migrate/migrate/releases/download/v4.16.2/migrate.linux-arm64.tar.gz | tar xvz
+          sudo mv migrate /usr/bin/migrate
 
       - name: Run migration
         run: make migrateup
